@@ -4,7 +4,7 @@ const config = {
   dev: process.env.NODE_ENV !== "production",
   port: process.env.PORT || 3001,
   tpagaApi:
-    "https://stag.wallet.tpaga.co/merchants/api/v1/payment_requests/create",
+    "https://stag.wallet.tpaga.co/merchants/api/v1",
   tpagaUser: process.env.TPAGA_USER,
   tpagaPasswd: process.env.TPAGA_PASSWD,
   cors: process.env.CORS,

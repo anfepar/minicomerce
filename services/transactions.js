@@ -25,7 +25,7 @@ class TransactionsService {
         expirationDate.setDate(expirationDate.getDate() + 1);
         return axios
           .post(
-            config.tpagaApi,
+            `${config.tpagaApi}/payment_requests/create`,
             {
               cost: totalPrice,
               idempotency_token: transactionId,
