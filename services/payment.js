@@ -14,7 +14,7 @@ class PaymentService {
     
     return axios
       .post(
-        config.tpaga_api,
+        config.tpagaApi,
         {
           cost: totalPrice,
           idempotency_token: idempotencyToken,
@@ -27,8 +27,8 @@ class PaymentService {
         },
         {
           auth: {
-            username: config.tpaga_user,
-            password: config.tpaga_passwd,
+            username: config.tpagaUser,
+            password: config.tpagaPasswd,
           },
         }
       )
