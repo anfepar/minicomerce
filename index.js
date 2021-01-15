@@ -3,7 +3,7 @@ const app = express();
 const { config } = require("./config/index");
 const cors = require("cors");
 
-const paymentApi = require("./routes/payment.js");
+const paymentApi = require("./routes/transactions.js");
 app.use(express.json());
 app.use(cors());
 

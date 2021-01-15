@@ -8,6 +8,7 @@ const config = {
   tpagaUser: process.env.TPAGA_USER,
   tpagaPasswd: process.env.TPAGA_PASSWD,
   cors: process.env.CORS,
+  frontendUrl: process.env.FRONTEND_URL,
   dbUser: process.env.DB_USER,
   dbPassword: process.env.DB_PASSWORD,
   dbHost: process.env.DB_HOST,
