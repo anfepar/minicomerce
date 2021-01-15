@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
+const { config } = require("./config/index");
 
-const { config } = require("config/index");
+const paymentApi = require("./routes/payment.js");
 
-app.get("/",function(req,res){
-    res.send("hello world")
-})
+app.use(express.json());
 
-app.listen(config.port,function(){
-    console.log(`Listening http://localhost:${config.port}`)
-})
+paymentApi(app);
+
+app.listen(config.port, function () {
+  console.log(`Listening http://localhost:${config.port}`);
+});
