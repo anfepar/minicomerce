@@ -1,24 +1,24 @@
 const express = require("express");
-const PaymentService = require("../services/payment");
+const TransactionsService = require("../services/transactions");
 const requestIp = require("request-ip");
 
-function paymentApi(app) {
+function transactiosApi(app) {
   const router = express.Router();
-  app.use("/api/payment", router);
+  app.use("/api/transactions", router);
 
-  const paymentService = new PaymentService();
+  const transactionsService = new TransactionsService();
   router.post("/generatePayment", async function (req, res, next) {
     const { body } = req;
     const clientIp = requestIp.getClientIp(req);
     try {
-      const deepLink = await paymentService.generatePayment(
+      const deepLink = await transactionsService.generatePayment(
         body.product,
         body.quantity,
         clientIp
       );
       res.status(200).json({
         data: deepLink,
-        message: "Deeplink generated",
+        message: "Payment request generated",
       });
     } catch (err) {
       if (err && err.response && err.response.data) {
@@ -32,4 +32,4 @@ function paymentApi(app) {
   });
 }
 
-module.exports = paymentApi;
+module.exports = transactiosApi;

@@ -1,0 +1,7 @@
+const STRINGS = {
+  TRANSACTION_STATUS_PENDING: "pending",
+  TRANSACTION_STATUS_DECLINED: "declined",
+  TRANSACTION_STATUS_DONE: "done",
+};
+
+module.exports = STRINGS;
