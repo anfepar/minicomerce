@@ -4,6 +4,8 @@ const { config } = require("./config/index");
 
 const paymentApi = require("./routes/payment.js");
 
+app.use(express.json());
+
 paymentApi(app);
 
 app.listen(config.port, function () {
