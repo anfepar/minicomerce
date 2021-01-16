@@ -89,6 +89,10 @@ class TransactionsService {
           });
       });
   }
+
+  async getTransactions() {
+    return this.mongoDB.getAll(this.collection);
+  }
 }
 
 module.exports = TransactionsService;
