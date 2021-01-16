@@ -30,6 +30,25 @@ function transactiosApi(app) {
       next(err);
     }
   });
+
+  router.get("/checkPayment/:id", async function (req, res, next) {
+    const { id } = req.params;
+    try {
+      const paymentData = await transactionsService.checkPayment(id);
+      res.status(200).json({
+        data: paymentData,
+        message: "Payment checked",
+      });
+    } catch (err) {
+      if (err && err.response && err.response.data) {
+        const errData = err.response.data;
+        res.status(500).json({
+          data: errData,
+        });
+      }
+      next(err);
+    }
+  });
 }
 
 module.exports = transactiosApi;
