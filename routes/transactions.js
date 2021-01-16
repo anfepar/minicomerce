@@ -49,6 +49,24 @@ function transactiosApi(app) {
       next(err);
     }
   });
+
+  router.get("/", async function (req, res, next) {
+    try {
+      const transactions = await transactionsService.getTransactions();
+      res.status(200).json({
+        data: transactions,
+        message: "Transactions listed",
+      });
+    } catch (err) {
+      if (err && err.response && err.response.data) {
+        const errData = err.response.data;
+        res.status(500).json({
+          data: errData,
+        });
+      }
+      next(err);
+    }
+  });
 }
 
 module.exports = transactiosApi;
