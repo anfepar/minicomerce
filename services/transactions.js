@@ -60,6 +60,35 @@ class TransactionsService {
           });
       });
   }
+  async checkPayment(transactionId) {
+    return this.mongoDB
+      .get(this.collection, transactionId)
+      .then((transaction) => {
+        if (!transaction.tpaga_token)
+          throw new Error("This transaction doesn't have tpaga_token");
+        return axios
+          .get(
+            `${config.tpagaApi}/payment_requests/${transaction.tpaga_token}/info`,
+            {
+              auth: {
+                username: config.tpagaUser,
+                password: config.tpagaPasswd,
+              },
+            }
+          )
+          .then((res) => {
+            if (res && res.data) {
+              const tpagaData = res.data;
+              if (tpagaData.status === "paid") {
+                this.mongoDB.update(this.collection, transactionId, {
+                  status: STRINGS.TRANSACTION_STATUS_DONE,
+                });
+              }
+              return tpagaData;
+            }
+          });
+      });
+  }
 }
 
 module.exports = TransactionsService;
