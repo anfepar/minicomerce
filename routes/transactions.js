@@ -67,6 +67,27 @@ function transactiosApi(app) {
       next(err);
     }
   });
+
+  router.post("/refund", async function (req, res, next) {
+    const { body } = req;
+    try {
+      const transactionData = await transactionsService.refund(
+        body.transactionId
+      );
+      res.status(200).json({
+        data: transactionData,
+        message: "Payment refunded",
+      });
+    } catch (err) {
+      if (err && err.response && err.response.data) {
+        const errData = err.response.data;
+        res.status(500).json({
+          data: errData,
+        });
+      }
+      next(err);
+    }
+  });
 }
 
 module.exports = transactiosApi;

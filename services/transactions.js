@@ -101,6 +101,42 @@ class TransactionsService {
       });
   }
 
+  async refund(transactionId) {
+    return this.mongoDB
+      .get(this.collection, transactionId)
+      .then((transaction) => {
+        if (!transaction) throw new Error("This transaction doesn't exists");
+        if (transaction && !transaction.tpaga_token)
+          throw new Error("This transaction doesn't have tpaga_token");
+        return axios
+          .post(
+            `${config.tpagaApi}/payment_requests/refund`,
+            {
+              payment_request_token: transaction.tpaga_token,
+            },
+            {
+              auth: {
+                username: config.tpagaUser,
+                password: config.tpagaPasswd,
+              },
+            }
+          )
+          .then((res) => {
+            if (res.response && res.response.data && res.isAxiosError)
+              throw new Error(res.response.data.error_messaje);
+            if (res && res.data) {
+              const tpagaData = res.data;
+              if (tpagaData.status && tpagaData.status !== transaction.status) {
+                this.mongoDB.update(this.collection, transactionId, {
+                  status: tpagaData.status,
+                });
+              }
+              return tpagaData;
+            }
+          });
+      });
+  }
+
   async getTransactions() {
     return this.mongoDB.getAll(this.collection);
   }
