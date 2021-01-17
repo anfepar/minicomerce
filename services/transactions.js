@@ -13,7 +13,7 @@ class TransactionsService {
     const transaction = {
       product: productId,
       quantity,
-      status: STRINGS.TRANSACTION_STATUS_PENDING,
+      status: STRINGS.TRANSACTION_STATUS_CREATED,
       user_ip: clientIp,
     };
     return this.mongoDB
@@ -32,7 +32,7 @@ class TransactionsService {
               order_id: transactionId,
               terminal_id: "web_page",
               user_ip_address: clientIp,
-              purchase_details_url: `${config.frontendUrl}/transaction/${transactionId}`,
+              purchase_details_url: `${config.frontendUrl}/payment/${transactionId}`,
               purchase_description: product.name,
               expires_at: expirationDate,
             },
@@ -54,7 +54,7 @@ class TransactionsService {
           })
           .catch((error) => {
             this.mongoDB.update(this.collection, transactionId, {
-              status: STRINGS.TRANSACTION_STATUS_DECLINED,
+              status: STRINGS.TRANSACTION_STATUS_FAILED,
             });
             throw new Error(error);
           });
@@ -64,7 +64,8 @@ class TransactionsService {
     return this.mongoDB
       .get(this.collection, transactionId)
       .then((transaction) => {
-        if (!transaction.tpaga_token)
+        if (!transaction) throw new Error("This transaction doesn't exists");
+        if (transaction && !transaction.tpaga_token)
           throw new Error("This transaction doesn't have tpaga_token");
         return axios
           .get(
@@ -77,15 +78,25 @@ class TransactionsService {
             }
           )
           .then((res) => {
+            if (res.response && res.response.data && res.isAxiosError)
+              throw new Error(res.response.data.error_messaje);
             if (res && res.data) {
               const tpagaData = res.data;
-              if (tpagaData.status === "paid") {
+              if (tpagaData.status && tpagaData.status !== transaction.status) {
                 this.mongoDB.update(this.collection, transactionId, {
-                  status: STRINGS.TRANSACTION_STATUS_DONE,
+                  status: tpagaData.status,
                 });
               }
               return tpagaData;
             }
+          })
+          .catch((err) => {
+            if (err.isAxiosError) {
+              this.mongoDB.update(this.collection, transactionId, {
+                status: STRINGS.TRANSACTION_STATUS_FAILED,
+              });
+            }
+            throw new Error(err);
           });
       });
   }
