@@ -3,7 +3,7 @@ This is a minicommerce who use the TPaga API to complete de payment
 This repo is API developed with Node.js and Express 
 Estimated time: 30 hours
 
-You could test it using the following link https://mighty-woodland-62043.herokuapp.com/api  and the endpoints `POST /transacitons/generatePayment`, `GET transactions/checkPayment/:id` and `GET transactions`
+You could test it using the following link https://mighty-woodland-62043.herokuapp.com/api  and the endpoints `POST /transacitons/generatePayment` with the parameters `product:"0001"` and `quantity:$QUANTITY_NUMBER` , `GET /transactions/checkPayment/:id`, `GET /transactions` and `POST /transactions/refund` with the parameter `transactionId`
 
 ## Getting started
 
